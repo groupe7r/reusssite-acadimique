@@ -1,0 +1,98 @@
+# Prédiction de Réussite Scolaire
+
+Ce projet est une application de Machine Learning destinée à prédire la réussite académique d'un étudiant à partir de données éducatives. Il reprend l'idée présentée dans `rapport_pfe_ameliore.docx` : exploiter des informations comme les notes précédentes, les absences, le temps d'étude et l'âge afin d'estimer si un étudiant risque de réussir ou d'échouer.
+
+Le projet entraîne plusieurs modèles de classification avec scikit-learn, puis les utilise dans une interface Streamlit où l'utilisateur peut saisir les informations d'un étudiant et obtenir une prédiction avec une probabilité.
+
+## Présentation Du Projet
+
+Le problème traité est une classification binaire :
+
+- `1` : réussite
+- `0` : échec
+
+L'implémentation actuelle utilise quatre variables d'entrée :
+
+- `age` : âge de l'étudiant
+- `absences` : nombre d'absences
+- `g1` : note du premier semestre
+- `study_hours` : heures d'étude
+
+Les principaux modèles utilisés sont :
+
+- Régression Logistique
+- Arbre de Décision
+- Random Forest
+- Arbre de Décision calibré
+- Random Forest calibrée
+
+## Fichiers Principaux
+
+- `main.py` : entraîne et évalue les modèles de Machine Learning.
+- `app.py` : interface web Streamlit pour faire les prédictions.
+- `student-por.csv` : dataset utilisé par le script d'entraînement actuel.
+- `student_models.pkl` : modèles entraînés sauvegardés par `main.py`.
+- `imputer.pkl` : outil d'imputation sauvegardé par `main.py`.
+- `newbasedone.py` : script de nettoyage/transformation utilisé pour les expérimentations.
+
+## Installation
+
+Créer un environnement virtuel :
+
+```powershell
+python -m venv .venv
+```
+
+Activer l'environnement virtuel avec Windows PowerShell :
+
+```powershell
+.\.venv\Scripts\Activate.ps1
+```
+
+Installer les bibliothèques nécessaires :
+
+```powershell
+python -m pip install -r requirements.txt
+```
+
+## Entraîner Les Modèles
+
+Lancer le script d'entraînement :
+
+```powershell
+python main.py
+```
+
+Ce script :
+
+1. Charge le fichier `student-por.csv`.
+2. Convertit la colonne cible `reussite` de `yes/no` vers `1/0`.
+3. Supprime les lignes dupliquées.
+4. Renomme les colonnes :
+   - `note de smestre1` vers `g1`
+   - `heures-etudie` vers `study_hours`
+5. Sélectionne les quatre variables : `age`, `absences`, `g1`, `study_hours`.
+6. Gère les valeurs manquantes avec `SimpleImputer`.
+7. Sépare les données en ensemble d'entraînement et ensemble de test.
+8. Entraîne et évalue les modèles.
+9. Sauvegarde les fichiers générés :
+   - `student_models.pkl`
+   - `imputer.pkl`
+
+Ces fichiers `.pkl` sont nécessaires pour lancer l'application Streamlit.
+
+## Lancer L'Application Streamlit
+
+Après l'installation des dépendances et la génération des fichiers `.pkl`, lancer :
+
+```powershell
+streamlit run app.py
+```
+
+L'application s'ouvrira dans le navigateur. Vous pouvez choisir un modèle, saisir les informations de l'étudiant, puis cliquer sur le bouton d'analyse pour afficher le résultat prédit avec les probabilités de réussite et d'échec.
+
+## Notes
+
+- Si `student_models.pkl` ou `imputer.pkl` sont absents, lancer d'abord `python main.py`.
+- Le rapport décrit le pipeline général du projet : nettoyage des données, sélection des variables, imputation, séparation train/test, entraînement, évaluation, sauvegarde des modèles et prédiction avec Streamlit.
+- Le code actuel utilise `student-por.csv` comme dataset d'entraînement.
